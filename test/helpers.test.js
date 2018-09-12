@@ -224,10 +224,6 @@ module.exports = {
     );
     test.done();
   },
-  embedPermissions(test) {
-    // TODO fill in
-    test.done();
-  },
   sanitizeDocument(test) {
     // TODO fill in
     test.done();
