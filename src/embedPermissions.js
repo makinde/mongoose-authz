@@ -20,6 +20,7 @@ function embedPermissions(schema, options, authLevels, doc) {
       remove: hasPermission(schema, authLevels, 'remove'),
     },
     writable: false,
+    enumerable: true,
   });
 
   // Freeze the object so this data can't be altered (even accidentally)

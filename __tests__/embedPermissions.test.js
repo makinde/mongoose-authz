@@ -135,3 +135,5 @@ test('Verify that the permissions data cannot be changed', (t) => {
     'The permissions field should not be writable',
   );
 });
+
+test.todo('Make sure enumerable is set to true for the embedded permissions');
