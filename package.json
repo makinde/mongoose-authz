@@ -35,7 +35,7 @@
   },
   "homepage": "https://github.com/devcolor/mongoose-authz#readme",
   "dependencies": {
-    "lodash": "^4.17.5"
+    "lodash": "4.17.15"
   },
   "peerDependencies": {
     "mongoose": "^5.0.0"
@@ -47,7 +47,7 @@
     "eslint-plugin-import": "2.9.0",
     "mongodb": "^3.0.1",
     "mongodb-memory-server": "5.2.1",
-    "mongoose": "^5.0.0",
+    "mongoose": "5.6.12",
     "nodeunit": "0.11.3"
   },
   "optionalDependencies": {}
