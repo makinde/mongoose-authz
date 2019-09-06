@@ -25,7 +25,7 @@ test('Model.create should not be callable with plugin installed', (t) => {
 
 test('Model.create should be callable without the plugin installed', async (t) => {
   const schema = new mongoose.Schema({ friend: String });
-  const MyModel = mongoose.model('ModelCreateWithoutPluggin', schema);
+  const MyModel = mongoose.model('ModelCreateWithoutPlugin', schema);
 
   await t.notThrowsAsync(MyModel.create({ friend: 'bar' }));
 });

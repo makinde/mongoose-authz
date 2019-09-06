@@ -70,7 +70,7 @@ test('Permissions embedded under default key', (t) => {
     'Incorrect permissions embedded',
   );
 });
-test('Permissions embded under custom key', (t) => {
+test('Permissions embedded under custom key', (t) => {
   const managerDoc = { _id: 'someId' };
   embedPermissions(t.context.schema, { permissions: 'customKey' }, ['manager'], managerDoc);
   t.deepEqual(
