@@ -9,7 +9,7 @@ function embedPermissions(schema, options, authLevels, doc) {
 
   if (doc[permsKey]) {
     // There's already something at the key where we're supposed to inset the permissions
-    // Throw an excpetion to help the developer avoid this error.
+    // Throw an exception to help the developer avoid this error.
     throw new Error(`Cannot embed permissions into mongoose document at \`${permsKey}\`because the key is already present in the document. Please specify a custom key.`);
   }
 

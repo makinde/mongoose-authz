@@ -45,7 +45,7 @@ test('Options say to do nothing', (t) => {
   t.deepEqual(blankDoc, { _id: 'someId' }, 'Should not add permissions for { permissions: false} options');
 });
 
-test('Permissions embeded under default key', (t) => {
+test('Permissions embedded under default key', (t) => {
   const managerDoc = { _id: 'someId' };
   embedPermissions(t.context.schema, { permissions: true }, ['manager'], managerDoc);
   t.deepEqual(
