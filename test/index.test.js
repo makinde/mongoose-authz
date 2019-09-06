@@ -2,8 +2,9 @@ const mongoose = require('mongoose');
 const User = require('./user.schema');
 const Car = require('./car.schema');
 const PermissionDeniedError = require('../src/PermissionDeniedError');
+const { MongoMemoryServer } = require('mongodb-memory-server');
 
-const dbUri = 'mongodb://localhost:27017/mongooseAuthorization';
+const mongoServer = new MongoMemoryServer();
 
 const userSeed1 = {
   email: 'foo@example.com',
@@ -56,18 +57,21 @@ const levelPermissions = Object.assign({}, permissions);
 delete levelPermissions.defaults;
 
 mongoose.Promise = global.Promise;
-mongoose.connect(dbUri);
-mongoose.connection.on('error', (err) => {
-  // eslint-disable-next-line no-console
-  console.error(`Failed to connect to mongo at ${dbUri}`);
-  // eslint-disable-next-line no-console
-  console.error(`MongoDB connection error: ${err}`);
-  throw err;
-});
 
 module.exports = {
   setUp: async (callback) => {
     try {
+      const dbUri = await mongoServer.getConnectionString();
+      mongoose.connect(dbUri);
+
+      mongoose.connection.on('error', (err) => {
+        // eslint-disable-next-line no-console
+        console.error(`Failed to connect to mongo at ${dbUri}`);
+        // eslint-disable-next-line no-console
+        console.error(`MongoDB connection error: ${err}`);
+        throw err;
+      });
+
       // conveniently, these static methods go around our authorization hooks
       await mongoose.connection.collections.newusers.drop();
       await mongoose.connection.collections.cars.drop();

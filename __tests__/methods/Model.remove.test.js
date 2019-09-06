@@ -1,10 +1,15 @@
 const test = require('ava');
 const mongoose = require('mongoose');
+const { MongoMemoryServer } = require('mongodb-memory-server');
 const authz = require('../../');
 const IncompatibleMethodError = require('../../src/IncompatibleMethodError');
 
+let mongoServer;
+
 test.before(async () => {
-  await mongoose.connect('mongodb://localhost:27017/ModelRemoveTests');
+  mongoServer = new MongoMemoryServer();
+  const uri = await mongoServer.getConnectionString();
+  await mongoose.connect(uri, { useNewUrlParser: true, useCreateIndex: true });
 });
 
 test('Model.remove should not be callable with plugin installed', (t) => {
@@ -27,4 +32,5 @@ test('Model.remove should be callable without the plugin installed', async (t) =
 
 test.after.always(async () => {
   await mongoose.disconnect();
+  await mongoServer.stop();
 });
