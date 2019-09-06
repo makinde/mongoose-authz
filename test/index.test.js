@@ -62,7 +62,7 @@ module.exports = {
   setUp: async (callback) => {
     try {
       const dbUri = await mongoServer.getConnectionString();
-      mongoose.connect(dbUri);
+      await mongoose.connect(dbUri, { useNewUrlParser: true, useCreateIndex: true });
 
       mongoose.connection.on('error', (err) => {
         // eslint-disable-next-line no-console
@@ -71,22 +71,26 @@ module.exports = {
         console.error(`MongoDB connection error: ${err}`);
         throw err;
       });
-
-      // conveniently, these static methods go around our authorization hooks
-      await mongoose.connection.collections.newusers.drop();
-      await mongoose.connection.collections.cars.drop();
-
-      const user1 = await new User(userSeed1).save({ authLevel: false });
-      const user2 = await new User(userSeed2).save({ authLevel: false });
-      user1.best_friend = user2;
-      await user1.save({ authLevel: false });
-      userDocs = [user1, user2];
-      await new Car(carSeed1).save({ authLevel: false });
-      await new Car(carSeed2).save({ authLevel: false });
-      callback();
     } catch (err) {
       callback(err);
     }
+
+    try {
+      // conveniently, these static methods go around our authorization hooks
+      await mongoose.connection.collections.newusers.drop();
+      await mongoose.connection.collections.cars.drop();
+    } catch (err2) {
+      // swallow exception
+    }
+
+    const user1 = await new User(userSeed1).save({ authLevel: false });
+    const user2 = await new User(userSeed2).save({ authLevel: false });
+    user1.best_friend = user2;
+    await user1.save({ authLevel: false });
+    userDocs = [user1, user2];
+    await new Car(carSeed1).save({ authLevel: false });
+    await new Car(carSeed2).save({ authLevel: false });
+    callback();
   },
   Disable: {
     find: async (test) => {
