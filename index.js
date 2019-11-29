@@ -9,6 +9,8 @@ const getEmbeddedPermission = require('./src/getEmbeddedPermission');
 const PermissionDeniedError = require('./src/PermissionDeniedError');
 const IncompatibleMethodError = require('./src/IncompatibleMethodError');
 
+const docOptionsSymbol = Symbol('documentOptions');
+
 module.exports = (schema, installationOptions) => {
   async function save(doc, options) {
     let authorizedFields = getEmbeddedPermission(doc, options, 'write');
@@ -110,8 +112,22 @@ module.exports = (schema, installationOptions) => {
   // is to have arguments to the middleware function. If we have arguments, mongoose
   // assume we want to use a `next()` function. FML
   schema.pre('save', function preSave(next, options) {
+    // Embed the options into the doc so we have access to them in post save hooks
+    this[docOptionsSymbol] = options;
     if (authIsDisabled(options)) { return next(); }
+
     return save(this, options)
+      .then(() => next())
+      .catch(next);
+  });
+  schema.post('save', (doc, next) => {
+    const options = doc[docOptionsSymbol];
+    if (authIsDisabled(options)) { return next(); }
+
+    // Nothing will likely be removed, but this allows people to specify that
+    // permissions should be returned, so this will recalculate permissions
+    // with the new  document data (after changes) and embed it if asked for
+    return sanitizeDocumentList(schema, options, doc)
       .then(() => next())
       .catch(next);
   });
@@ -147,13 +163,6 @@ module.exports = (schema, installationOptions) => {
   schema.query.setAuthLevel = function setAuthLevel(authLevel) {
     this.options.authLevel = authLevel;
     return this;
-  };
-
-  // TODO add tests for this function
-  schema.statics.canCreate = async function canCreate(options) {
-    // Check just the blank document since nothing exists yet
-    const authLevels = await resolveAuthLevel(schema, options, {});
-    return hasPermission(this.schema, authLevels, 'create');
   };
 
   const allowedMethods = _.get(installationOptions, 'allowedMethods');

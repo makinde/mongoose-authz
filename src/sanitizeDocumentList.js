@@ -6,7 +6,7 @@ const embedPermissions = require('./embedPermissions');
 async function sanitizeDocument(schema, options, doc) {
   if (!doc) { return; }
 
-  // If there are subschemas that need to be authorized, store a reference to the top
+  // If there are sub-schemas that need to be authorized, store a reference to the top
   // level doc so they have context when doing their authorization checks
   const optionAddition = {};
   if (!options.originalDoc && !_.isEmpty(schema.pathsWithPermissionedSchemas)) {
