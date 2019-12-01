@@ -112,6 +112,12 @@ test('Verify that the permissions data cannot be changed', (t) => {
   embedPermissions(t.context.schema, { permissions: true }, ['manager'], doc);
 
   t.throws(
+    () => { doc.permissions = {}; },
+    Error,
+    'The permissions object shouldn\'t be writable overall',
+  );
+
+  t.throws(
     () => { doc.permissions.read = []; },
     Error,
     'The permissions object shouldn\'t be writable [read]',
