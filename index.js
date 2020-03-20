@@ -112,9 +112,16 @@ module.exports = (schema, installationOptions) => {
   // is to have arguments to the middleware function. If we have arguments, mongoose
   // assume we want to use a `next()` function. FML
   schema.pre('save', function preSave(next, options) {
-    // Embed the options into the doc so we have access to them in post save hooks
-    this[docOptionsSymbol] = options;
+    // If we don't have options saved in the doc already, put whatever options
+    // we have now in there. This way there are always options saved in the doc.
+    if (!this[docOptionsSymbol]) this[docOptionsSymbol] = options;
+
+    // If auth is disabled, don't store the options in the doc. This will leave options
+    // that have been stored when the doc was retrieved (if any).
     if (authIsDisabled(options)) { return next(); }
+
+    // Okay, we are not disabled, so definitely use these options going forward.
+    this[docOptionsSymbol] = options;
 
     return save(this, options)
       .then(() => next())
@@ -145,10 +152,26 @@ module.exports = (schema, installationOptions) => {
   });
   schema.post('find', async function postFind(docs) {
     if (authIsDisabled(this.options)) { return; }
+
+    // Store the options in the doc in case we do a write operation later on.
+    // If that write skips authz checks, it'll be able to use these options to
+    // recalculate permissions.
+    if (this.options && docs && docs.forEach) {
+      docs.forEach((doc) => { doc[docOptionsSymbol] = this.options; });
+    }
+
     await find(this, docs);
   });
   schema.post('findOne', async function postFindOne(doc) {
     if (authIsDisabled(this.options)) { return; }
+
+    // Store the options in the doc in case we do a write operation later on.
+    // If that write skips authz checks, it'll be able to use these options to
+    // recalculate permissions.
+    if (this.options && doc) {
+      doc[docOptionsSymbol] = this.options;
+    }
+
     await find(this, doc);
   });
   schema.pre('update', async function preUpdate() {
