@@ -7,6 +7,7 @@ bareBonesSchema.permissions = {
     write: ['address', 'phone', 'birthday', 'not_here_either'],
     create: true,
     remove: true,
+    actions: ['sayHello', 'jumpRealHigh'],
   },
 };
 

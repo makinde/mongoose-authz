@@ -11,6 +11,7 @@ test.before((t) => {
       write: ['friend'],
       create: true,
       remove: true,
+      actions: ['like'],
     },
   };
   t.context.schema = schema;
@@ -54,6 +55,7 @@ test('Permissions embedded under default key', (t) => {
       read: ['friend'],
       write: ['friend'],
       remove: true,
+      actions: ['like'],
     },
     'Incorrect permissions embedded',
   );
@@ -66,6 +68,7 @@ test('Permissions embedded under default key', (t) => {
       read: [],
       write: [],
       remove: false,
+      actions: [],
     },
     'Incorrect permissions embedded',
   );
@@ -79,6 +82,7 @@ test('Permissions embedded under custom key', (t) => {
       read: ['friend'],
       write: ['friend'],
       remove: true,
+      actions: ['like'],
     },
     'Incorrect permissions embedded',
   );
@@ -91,6 +95,7 @@ test('Permissions embedded under custom key', (t) => {
       read: [],
       write: [],
       remove: false,
+      actions: [],
     },
     'Incorrect permissions embedded',
   );
@@ -136,9 +141,34 @@ test('Verify that the permissions data cannot be changed', (t) => {
   );
 
   t.throws(
+    () => { doc.permissions.actions = []; },
+    Error,
+    'The permissions object shouldn\'t be writable [actions]',
+  );
+
+  t.throws(
     () => { doc.permissions = {}; },
     Error,
     'The permissions field should not be writable',
+  );
+
+  // Try to directly edit the fields. These won't throw, but also shouldn't
+  // affect the permissions on the object.
+  doc.permissions.read.push('foo');
+  doc.permissions.write.push('foo');
+  doc.permissions.actions.push('foo');
+  doc.permissions.read.shift();
+  doc.permissions.write.shift();
+  doc.permissions.actions.shift();
+  t.deepEqual(
+    doc.permissions,
+    {
+      read: ['friend'],
+      write: ['friend'],
+      remove: true,
+      actions: ['like'],
+    },
+    'Permissions able to be mutated when they should not be.',
   );
 });
 

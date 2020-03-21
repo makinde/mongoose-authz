@@ -50,7 +50,8 @@ userSchema.permissions = {
   admin: {
     read: ['status'],
     write: ['status'],
-    create: true
+    create: true,
+    actions: ['merge'],
   },
   owner: {
     read: ['status'],
@@ -71,6 +72,7 @@ The permissions object consists of properties that represent your authorization 
 * `remove` - Boolean
 * `write` - [array of fields] *NOTE: if `upsert: true`, the group will need to have `create` permissions too*
 * `read` - [array of fields]
+* `actions` - An array or arbitrary strings that lets you define more complicated actions (usually involving multiple fields or documents) that are allowed. Your own application code will need to handle the updates (likely disabling field level checking for those updates).
 
 You can also specify a `defaults` group, which represents permissions that are available to all groups.
 
@@ -145,7 +147,8 @@ console.log(user.permissions);
 // {
 //   read: [...],
 //   write: [...],
-//   remove: [boolean]
+//   remove: [boolean],
+//   actions: [...],
 // }
 
 // OR
@@ -156,7 +159,8 @@ console.log(user.foo);
 // {
 //   read: [...],
 //   write: [...],
-//   remove: [boolean]
+//   remove: [boolean],
+//   actions: [...],
 // }
 ```
 

@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const getAuthorizedFields = require('./getAuthorizedFields');
+const getAuthorizedActions = require('./getAuthorizedActions');
 const hasPermission = require('./hasPermission');
 
 const embedPermissionsSymbol = Symbol('Embedded Permissions');
@@ -24,10 +25,16 @@ function embedPermissions(schema, options, authLevels, doc) {
     });
   }
 
+  const read = getAuthorizedFields(schema, authLevels, 'read');
+  const write = getAuthorizedFields(schema, authLevels, 'write');
+  const hasRemovePermission = hasPermission(schema, authLevels, 'remove');
+  const actions = getAuthorizedActions(schema, authLevels);
+
   doc[embedPermissionsSymbol] = Object.freeze({
-    read: getAuthorizedFields(schema, authLevels, 'read'),
-    write: getAuthorizedFields(schema, authLevels, 'write'),
-    remove: hasPermission(schema, authLevels, 'remove'),
+    get read() { return [...read]; },
+    get write() { return [...write]; },
+    remove: hasRemovePermission,
+    get actions() { return [...actions]; },
   });
 }
 

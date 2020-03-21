@@ -12,16 +12,19 @@ goodSchema.permissions = {
     read: ['_id', 'name'],
     write: [],
     create: false,
+    actions: ['wave'],
   },
   admin: {
     read: ['address', 'phone', 'birthday'],
     write: ['address', 'phone', 'birthday'],
     create: true,
     remove: true,
+    actions: ['combine'],
   },
   self: {
     read: ['address', 'phone', 'birthday'],
     write: ['address', 'phone'],
+    actions: ['combine'],
   },
   stranger: {},
   hasVirtuals: {
