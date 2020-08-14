@@ -80,6 +80,7 @@ module.exports = (schema, installationOptions) => {
     }
 
     // TODO handle the overwrite option
+    // TODO handle Model.updateOne
     // TODO handle Model.updateMany
 
     // Detect which fields can be returned if 'new: true' is set

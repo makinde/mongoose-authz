@@ -107,7 +107,7 @@ test('If there\'s already a permissions field', (t) => {
     () => {
       embedPermissions(t.context.schema, { permissions: true }, ['manager'], doc);
     },
-    Error,
+    null,
     'An error should be thrown when a permissions key is already present in the target object',
   );
 });
@@ -118,37 +118,37 @@ test('Verify that the permissions data cannot be changed', (t) => {
 
   t.throws(
     () => { doc.permissions = {}; },
-    Error,
+    null,
     'The permissions object shouldn\'t be writable overall',
   );
 
   t.throws(
     () => { doc.permissions.read = []; },
-    Error,
+    null,
     'The permissions object shouldn\'t be writable [read]',
   );
 
   t.throws(
     () => { doc.permissions.write = []; },
-    Error,
+    null,
     'The permissions object shouldn\'t be writable [write]',
   );
 
   t.throws(
     () => { doc.permissions.remove = false; },
-    Error,
+    null,
     'The permissions object shouldn\'t be writable [remove]',
   );
 
   t.throws(
     () => { doc.permissions.actions = []; },
-    Error,
+    null,
     'The permissions object shouldn\'t be writable [actions]',
   );
 
   t.throws(
     () => { doc.permissions = {}; },
-    Error,
+    null,
     'The permissions field should not be writable',
   );
 

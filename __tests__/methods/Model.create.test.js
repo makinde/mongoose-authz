@@ -19,7 +19,7 @@ test('Model.create should not be callable with plugin installed', (t) => {
 
   t.throws(
     () => MyModel.create({ friend: 'bar' }),
-    IncompatibleMethodError,
+    { instanceOf: IncompatibleMethodError },
   );
 });
 

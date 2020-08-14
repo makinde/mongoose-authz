@@ -32,9 +32,13 @@ function embedPermissions(schema, options, authLevels, doc) {
 
   doc[embedPermissionsSymbol] = Object.freeze({
     get read() { return [...read]; },
+    set read(v) { throw new Error('Cannot manually set read permissions'); },
     get write() { return [...write]; },
-    remove: hasRemovePermission,
+    set write(v) { throw new Error('Cannot manually set write permissions'); },
+    get remove() { return hasRemovePermission; },
+    set remove(v) { throw new Error('Cannot manually set remove permissions'); },
     get actions() { return [...actions]; },
+    set actions(v) { throw new Error('Cannot manually set actions permissions'); },
   });
 }
 

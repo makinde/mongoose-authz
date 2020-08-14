@@ -19,7 +19,7 @@ test('Model.remove should not be callable with plugin installed', (t) => {
 
   t.throws(
     () => MyModel.remove({ friend: 'bar' }).exec(),
-    IncompatibleMethodError,
+    { instanceOf: IncompatibleMethodError },
   );
 });
 

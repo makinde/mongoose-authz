@@ -62,7 +62,11 @@ module.exports = {
   setUp: async (callback) => {
     try {
       const dbUri = await mongoServer.getConnectionString();
-      await mongoose.connect(dbUri, { useNewUrlParser: true, useCreateIndex: true });
+      await mongoose.connect(dbUri, {
+        useNewUrlParser: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+      });
 
       mongoose.connection.on('error', (err) => {
         // eslint-disable-next-line no-console
